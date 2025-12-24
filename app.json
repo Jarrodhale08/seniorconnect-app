@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "newArchEnabled": true,
+    "name": "SeniorConnect",
+    "slug": "seniorconnect",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "seniorconnect",
+    "userInterfaceStyle": "automatic",
+    "runtimeVersion": "1.0.0",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#EC4899"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.seniorconnect.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "SeniorConnect needs camera access to share photos with family and friends.",
+        "NSPhotoLibraryUsageDescription": "SeniorConnect needs photo library access to share memories.",
+        "NSContactsUsageDescription": "SeniorConnect needs contacts access to help you stay connected with family.",
+        "UIBackgroundModes": ["remote-notification"]
+      }
+    },
+    "android": {
+      "package": "com.seniorconnect.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#EC4899"
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_CONTACTS"
+      ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "67c2667d-6254-41da-a5a7-ac8aec93cfd4"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#EC4899"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
