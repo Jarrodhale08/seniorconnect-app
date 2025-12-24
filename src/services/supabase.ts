@@ -19,6 +19,7 @@ import { AppState, AppStateStatus } from 'react-native';
 // ============================================================================
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
+export const APP_ID = process.env.EXPO_PUBLIC_APP_ID || 'seniorconnect';
 
 // ============================================================================
 // LAZY CLIENT INITIALIZATION
@@ -107,6 +108,49 @@ export async function getCurrentSession() {
     return null;
   }
   return session;
+}
+
+/**
+ * Initialize app context for multi-tenant isolation
+ * Creates a user_app_context record linking the user to this app
+ */
+export async function initializeAppContext(): Promise<void> {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      console.warn('No user logged in, skipping app context initialization');
+      return;
+    }
+
+    // Check if context already exists
+    const { data: existing } = await getSupabase()
+      .from('user_app_context')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('app_id', APP_ID)
+      .single();
+
+    if (existing) {
+      // Update last accessed time
+      await getSupabase()
+        .from('user_app_context')
+        .update({ last_accessed_at: new Date().toISOString() })
+        .eq('user_id', user.id)
+        .eq('app_id', APP_ID);
+    } else {
+      // Create new context
+      await getSupabase()
+        .from('user_app_context')
+        .insert({
+          user_id: user.id,
+          app_id: APP_ID,
+          first_accessed_at: new Date().toISOString(),
+          last_accessed_at: new Date().toISOString(),
+        });
+    }
+  } catch (error) {
+    console.error('Failed to initialize app context:', error);
+  }
 }
 
 export default supabase;

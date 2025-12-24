@@ -1,0 +1,212 @@
+================================================================================
+                SENIORCONNECT - PRE-PUBLICATION CHECKLIST
+================================================================================
+
+================================================================================
+REQUIRED - Must complete before App Store/Play Store submission
+================================================================================
+
+[ ] REVENUECAT SETUP
+    - Create account at https://revenuecat.com
+    - Create new project for SeniorConnect
+    - Copy API key to .env as EXPO_PUBLIC_REVENUECAT_API_KEY
+    - Design paywall in RevenueCat dashboard (Paywall Builder)
+    - Create "seniorconnect_pro" entitlement
+    - Create "default" offering with packages
+
+[ ] APP STORE PRODUCTS (iOS)
+    - Go to App Store Connect → Your App → In-App Purchases
+    - Create auto-renewable subscription group "SeniorConnect Premium"
+    - Add products:
+      * Monthly Subscription ($9.99/month)
+      * Yearly Subscription ($79.99/year) - Save 33%
+      * (Optional) Lifetime ($149.99 one-time)
+    - Configure 7-day free trial for Monthly and Yearly products:
+      * Go to Subscription Prices → Introductory Offers
+      * Add Free Trial: 7 days, Free
+    - Import products into RevenueCat dashboard
+
+[ ] GOOGLE PLAY PRODUCTS (Android)
+    - Go to Play Console → Your App → Monetize → Subscriptions
+    - Create matching subscription products with same IDs
+    - Create base plans for each subscription
+    - Add 7-day free trial offer to Monthly and Yearly plans
+    - Import products into RevenueCat dashboard
+
+[ ] SUPABASE SETUP (CRITICAL)
+    - Get actual Supabase anon key for Build project
+    - Update .env with real EXPO_PUBLIC_SUPABASE_ANON_KEY
+    - Get key from: https://supabase.com/dashboard/project/kazhissaknwmagcribxq/settings/api
+    - Enable Email/Password authentication in Supabase dashboard
+    - Configure email templates for:
+      * Signup confirmation
+      * Password reset
+      * Magic link login (optional)
+    - (Optional) Enable social logins (Google, Apple)
+    - Test authentication flows
+
+[ ] NOTIFICATION ICONS
+    - Create notification-icon.png (96x96px, white on transparent)
+    - Place in assets/images/ directory
+    - Update app.json notification plugin config if needed
+
+[ ] APP ICONS AND SPLASH
+    - Verify icon.png exists (1024x1024px)
+    - Verify adaptive-icon.png exists (1024x1024px)
+    - Verify splash.png exists
+    - Test on physical device to ensure proper display
+
+[ ] UPDATE CONTACT INFORMATION
+    - Replace placeholder emails in legal documents:
+      * app/settings/terms.tsx
+      * app/settings/privacy.tsx
+      * app/settings/licenses.tsx
+    - Update support email in app/settings/support.tsx
+    - Add actual company/developer name and address
+
+[ ] TEST CORE FUNCTIONALITY
+    - [ ] Onboarding flow (7-day trial CTA)
+    - [ ] Sign up / Sign in flows
+    - [ ] Premium banner shows for free users
+    - [ ] Subscription screen opens when tapping upgrade
+    - [ ] Stats cards display correctly
+    - [ ] Notifications permission request works
+    - [ ] Pull-to-refresh works on home screen
+    - [ ] All settings pages are accessible
+
+================================================================================
+OPTIONAL - Recommended but not required for initial launch
+================================================================================
+
+[ ] ANALYTICS INTEGRATION
+    - Set up analytics (Google Analytics, Mixpanel, Amplitude, etc.)
+    - Track key events:
+      * Onboarding completion
+      * Trial start
+      * Subscription purchase
+      * Feature usage
+
+[ ] CRASH REPORTING
+    - Set up Sentry or similar crash reporting
+    - Configure source maps for better debugging
+    - Test crash reporting in development
+
+[ ] SOCIAL LOGIN
+    - Enable Google Sign-In in Supabase
+    - Enable Apple Sign-In in Supabase
+    - Configure OAuth redirect URLs
+    - Test social login flows
+
+[ ] ACCESSIBILITY AUDIT
+    - Test with VoiceOver (iOS) and TalkBack (Android)
+    - Verify screen reader labels on all interactive elements
+    - Test font scaling (Settings → Accessibility → Larger Text)
+    - Verify color contrast ratios meet WCAG guidelines
+    - (Especially important for senior users!)
+
+[ ] PERFORMANCE OPTIMIZATION
+    - Run app in release mode and test performance
+    - Check bundle size with: npx expo export
+    - Optimize images with ImageOptim or similar
+    - Profile app with React DevTools Profiler
+
+================================================================================
+PRODUCTION DEPLOYMENT
+================================================================================
+
+[ ] MIGRATE TO PRODUCTION SUPABASE (AFTER TESTING COMPLETE)
+    1. Run migration SQL on Production project (aweahqgyrthpdxrnzaoi)
+    2. Create .env.production with Production credentials:
+       EXPO_PUBLIC_SUPABASE_URL=https://aweahqgyrthpdxrnzaoi.supabase.co
+       EXPO_PUBLIC_SUPABASE_ANON_KEY=<production_anon_key>
+       EXPO_PUBLIC_APP_ID=seniorconnect
+       EXPO_PUBLIC_REVENUECAT_API_KEY=<your_key>
+    3. Use .env.production for app store builds
+
+[ ] EAS BUILD CONFIGURATION
+    - Run: eas build:configure
+    - Configure build profiles in eas.json
+    - Set up production build profile with .env.production
+
+[ ] IOS BUILD (TestFlight)
+    - Run: npx eas build --platform ios --profile production
+    - Upload to TestFlight
+    - Add internal testers
+    - Test subscription flow on physical device
+    - Submit for App Store review
+
+[ ] ANDROID BUILD (Internal Testing)
+    - Run: npx eas build --platform android --profile production
+    - Upload to Play Console internal testing track
+    - Add internal testers
+    - Test subscription flow on physical device
+    - Submit for Play Store review
+
+[ ] APP STORE METADATA
+    - Screenshots (use fastlane/screenshots if generated)
+    - App description highlighting senior-friendly features
+    - Keywords for App Store search optimization
+    - Privacy policy URL
+    - Support URL
+    - Marketing URL (optional)
+
+[ ] PRIVACY POLICY & TERMS
+    - Host privacy policy on web (required for app stores)
+    - Host terms of service on web
+    - Update links in app.json and legal pages
+    - Ensure compliance with COPPA, GDPR, CCPA if applicable
+
+================================================================================
+PREMIUM FEATURES CONFIGURED
+================================================================================
+
+Free Tier Limits (Enforced):
+  - Family Circles: 2 max
+  - Medication Reminders: 5 max
+  - Emergency Contacts: 3 max
+  - Video Calls: Disabled
+  - Health Tracking: Disabled
+  - Cloud Sync: Disabled
+  - Photo Sharing: 10/month
+
+Premium Tier (Unlimited):
+  - Unlimited Family Circles
+  - Unlimited Medication Reminders
+  - Unlimited Emergency Contacts
+  - HD Video Calls
+  - Full Health Tracking
+  - Cloud Sync
+  - Unlimited Photo Sharing
+
+================================================================================
+NOTES
+================================================================================
+
+- The app is configured for Supabase Build project by default
+- Build project is for development and testing ONLY
+- Production project must be used for app store builds
+- Never commit .env files to version control
+- Keep .env.example updated with all required keys
+- Test 7-day free trial flow thoroughly before launch
+- Ensure senior-friendly UI with large fonts and clear CTAs
+
+================================================================================
+CONTACTS & RESOURCES
+================================================================================
+
+Supabase Build Dashboard:
+  https://supabase.com/dashboard/project/kazhissaknwmagcribxq
+
+RevenueCat Dashboard:
+  https://app.revenuecat.com
+
+Expo Application Services:
+  https://expo.dev
+
+App Store Connect:
+  https://appstoreconnect.apple.com
+
+Google Play Console:
+  https://play.google.com/console
+
+================================================================================

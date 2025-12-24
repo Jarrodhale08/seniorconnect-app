@@ -1,9 +1,14 @@
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Link, useSegments } from "expo-router";
+import { Link, useSegments, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRevenueCatInit } from "../src/hooks/useRevenueCatInit";
+import { useNotificationInit } from "../src/hooks/useNotificationInit";
+import { useAuthStore } from "../src/stores/authStore";
 
 import "../global.css";
 
@@ -39,10 +44,40 @@ const DrawerLink = ({ href, label, icon, onPress }: DrawerLinkProps) => (
 );
 
 const RootLayout = () => {
+  const router = useRouter();
   const segments = useSegments();
   const currentScreen = segments[segments.length - 1] || "Dashboard";
   const drawerTitle = currentScreen === "(tabs)" ? "Dashboard" :
     currentScreen.charAt(0).toUpperCase() + currentScreen.slice(1);
+
+  // Initialize RevenueCat and Notifications
+  useRevenueCatInit();
+  useNotificationInit();
+
+  // Initialize auth store
+  const { initialize } = useAuthStore();
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  // Check onboarding completion
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      try {
+        const onboardingComplete = await AsyncStorage.getItem('seniorconnect_onboarding_complete');
+        const inOnboarding = segments[0] === 'onboarding';
+
+        if (!onboardingComplete && !inOnboarding) {
+          router.replace('/onboarding');
+        }
+      } catch (error) {
+        console.error('Error checking onboarding:', error);
+      }
+    };
+
+    checkOnboarding();
+  }, [segments, router]);
 
   return (
     <QueryClientProvider client={client}>
